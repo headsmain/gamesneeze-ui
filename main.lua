@@ -1074,9 +1074,9 @@ do
                 }
             }
             --
-            local esppreview_frame = utility:Create("Frame", {Vector2.new(main_frame.Size.X + 5,0), main_frame}, {
+            local esppreview_frame = utility:Create("Frame", {Vector2.new(main_frame.Size.X + 5, 0)}, {
                 Size = utility:Size(0, 236, 0, 339),
-                Position = utility:Position(1, 5, 0, 0, main_frame),
+                Position = utility:Position(0, main_frame.Size.X + 5, 0, 0),
                 Color = theme.outline
             }, window.VisualPreview.Drawings)
             --
@@ -1211,6 +1211,7 @@ do
                     utility:UpdateOffset(boxoutline, {Vector2.new(esppreview_frame_previewbox.Size.X - BoxSize.X - 1, 20), esppreview_frame_previewbox})
                     --
                     window:Move(main_frame.Position + Vector2.new(0, 0))
+                    window:MovePreview(window.VisualPreview.Frame.Position)
                 end
             end
             --
@@ -1546,6 +1547,9 @@ do
                 --
                 window.VisualPreview.Drawings = NewDrawings
             end
+            --
+            window.VisualPreview.Frame = esppreview_frame
+            window.VisualPreview.Inner = esppreview_inner
         end
         --
         function window:SetName(Name)
@@ -1579,7 +1583,7 @@ do
         --
         function window:Move(vector)
             for i,v in pairs(library.drawings) do
-                if v[1].Visible then
+                if v[1].Visible and not window.VisualPreview.Drawings[v[1]] then
                     if v[2][2] then
                         v[1].Position = utility:Position(0, v[2][1].X, 0, v[2][1].Y, v[2][2])
                     else
@@ -1588,6 +1592,21 @@ do
                 end
             end
         end
+        --
+        function window:MovePreview(vector)
+            for i,v in pairs(library.drawings) do
+                if v[1].Visible and window.VisualPreview.Drawings[v[1]] then
+                    if v[2][2] then
+                        v[1].Position = utility:Position(0, v[2][1].X, 0, v[2][1].Y, v[2][2])
+                    else
+                        v[1].Position = utility:Position(0, vector.X, 0, vector.Y)
+                    end
+                end
+            end
+        end
+        --
+        window.previewDragging = false
+        window.previewDrag = Vector2.new(0, 0)
         --
         function window:CloseContent()
             if window.currentContent.dropdown and window.currentContent.dropdown.open then
@@ -2380,6 +2399,13 @@ do
                 window.drag = Vector2.new(mouseLocation.X - main_frame.Position.X, mouseLocation.Y - main_frame.Position.Y)
             end
             --
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 and window.isVisible and utility:MouseOverDrawing({window.VisualPreview.Inner.Position.X,window.VisualPreview.Inner.Position.Y,window.VisualPreview.Inner.Position.X + window.VisualPreview.Inner.Size.X,window.VisualPreview.Inner.Position.Y + 20}) then
+                local mouseLocation = utility:MouseLocation()
+                --
+                window.previewDragging = true
+                window.previewDrag = Vector2.new(mouseLocation.X - window.VisualPreview.Frame.Position.X, mouseLocation.Y - window.VisualPreview.Frame.Position.Y)
+            end
+            --
             if window.currentContent.textbox then
                 if Find(utility.Keyboard.Letters, utility:InputToString(Input.KeyCode)) then
                     if uis:IsKeyDown(Enum.KeyCode.LeftShift) then
@@ -2411,6 +2437,11 @@ do
                 window.drag = Vector2.new(0, 0)
             end
             --
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 and window.isVisible and window.previewDragging then
+                window.previewDragging = false
+                window.previewDrag = Vector2.new(0, 0)
+            end
+            --
             if window.currentContent.textbox and window.currentContent.textbox.Fire and window.currentContent.textbox.Backspace then
                 if utility:InputToString(Input.KeyCode) == "Back" then
                     window.currentContent.textbox.Backspace = nil
@@ -2428,6 +2459,12 @@ do
                     local move = Vector2.new(mouseLocation.X - window.drag.X, mouseLocation.Y - window.drag.Y)
                     window:Move(move)
                 end
+            end
+            --
+            if window.previewDragging and window.isVisible then
+                local mouseLocation = utility:MouseLocation()
+                local move = Vector2.new(math.clamp(mouseLocation.X - window.previewDrag.X, 5, utility:GetScreenSize().X-window.VisualPreview.Frame.Size.X-5), math.clamp(mouseLocation.Y - window.previewDrag.Y, 5, utility:GetScreenSize().Y-window.VisualPreview.Frame.Size.Y-5))
+                window:MovePreview(move)
             end
         end
         --
