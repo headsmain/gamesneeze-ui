@@ -1343,15 +1343,15 @@ do
                 }, window.VisualPreview.Drawings)
                 --
                 local preview_character = utility:Create("Image", {Vector2.new(46/2, 40/2), preview_box}, {
-                    Size = utility:Size(1, -46, 1, -40, preview_box),
-                    Position = utility:Position(0, (46/2), 0, (40/2), preview_box)
+                    Size = utility:Size(1, -46, 1, -46, preview_box),
+                    Position = utility:Position(0, (46/2), 0, (46/2), preview_box)
                 }, window.VisualPreview.Drawings)
                 --
                 task.spawn(function()
                     wait(1)
                     local ok, err = pcall(function()
                         local hs = game:GetService("HttpService")
-                        local jsonResp = game:HttpGet("https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" .. localplayer.UserId .. "&size=420x420&format=Png&isCircular=false")
+                        local jsonResp = game:HttpGet("https://thumbnails.roblox.com/v1/users/avatar?userIds=" .. localplayer.UserId .. "&size=420x420&format=Png&isCircular=false")
                         local decoded = hs:JSONDecode(jsonResp)
                         local url = decoded.data[1].imageUrl
                         local imgData = game:HttpGet(url)
