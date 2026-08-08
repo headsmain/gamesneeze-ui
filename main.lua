@@ -1313,7 +1313,7 @@ do
                 }, window.VisualPreview.Drawings);healthbar = preview_heatlhbar
                 --
                 local preview_title = utility:Create("TextLabel", {Vector2.new(preview_box.Size.X / 2, -20), preview_box}, {
-                    Text = "Username",
+                    Text = localplayer.DisplayName ~= "" and localplayer.DisplayName or localplayer.Name,
                     Size = theme.textsize,
                     Font = theme.font,
                     Color = theme.textcolor,
@@ -1349,16 +1349,15 @@ do
                 }, window.VisualPreview.Drawings)
                 --
                 task.spawn(function()
-                    pcall(function()
-                        local hs = game:GetService("HttpService")
-                        local json = game:HttpGet(("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=420x420&format=Png&isCircular=false"):format(localplayer.UserId))
-                        local decoded = hs:JSONDecode(json)
-                        local url = decoded.data[1].imageUrl
+                    wait(1)
+                    local ok, err = pcall(function()
+                        local url = ("https://www.roblox.com/headshot-thumbnail/image?userId=%d&width=420&height=420&format=png"):format(localplayer.UserId)
                         local imagedata = game:HttpGet(url)
-                        if preview_character.__OBJECT_EXISTS then
+                        if preview_character and preview_character.__OBJECT_EXISTS then
                             preview_character.Data = imagedata
                         end
                     end)
+                    if not ok then warn("[ESP Preview] Avatar load failed:", err) end
                 end)
                 --
                 do -- Chams
