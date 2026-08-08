@@ -60,7 +60,7 @@ local sections = {}
 -- Theme Variables
 --local themes = {}
 local theme = {
-    accent = Color3.fromRGB(34, 203, 168),
+    accent = Color3.fromRGB(55, 175, 225),
     lightcontrast = Color3.fromRGB(30, 30, 30),
     darkcontrast = Color3.fromRGB(20, 20, 20),
     outline = Color3.fromRGB(0, 0, 0),
@@ -1344,17 +1344,19 @@ do
                 --
                 local preview_character = utility:Create("Image", {Vector2.new(46/2, 40/2), preview_box}, {
                     Size = utility:Size(1, -46, 1, -40, preview_box),
-                    Position = utility:Position(0, (46/2), 0, (40/2), preview_box),
-                    Transparency = 0
+                    Position = utility:Position(0, (46/2), 0, (40/2), preview_box)
                 }, window.VisualPreview.Drawings)
                 --
                 task.spawn(function()
                     wait(1)
                     local ok, err = pcall(function()
-                        local url = ("https://www.roblox.com/headshot-thumbnail/image?userId=%d&width=420&height=420&format=png"):format(localplayer.UserId)
-                        local imagedata = game:HttpGet(url)
+                        local hs = game:GetService("HttpService")
+                        local jsonResp = game:HttpGet("https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" .. localplayer.UserId .. "&size=420x420&format=Png&isCircular=false")
+                        local decoded = hs:JSONDecode(jsonResp)
+                        local url = decoded.data[1].imageUrl
+                        local imgData = game:HttpGet(url)
                         if preview_character and preview_character.__OBJECT_EXISTS then
-                            preview_character.Data = imagedata
+                            preview_character.Data = imgData
                         end
                     end)
                     if not ok then warn("[ESP Preview] Avatar load failed:", err) end
