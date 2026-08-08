@@ -1342,12 +1342,20 @@ do
                     Position = utility:Position(0.5, 0, 1, 20, preview_box)
                 }, window.VisualPreview.Drawings)
                 --
-                local preview_character = utility:Create("Frame", {Vector2.new(46/2, 40/2), preview_box}, {
+                local preview_character = utility:Create("Image", {Vector2.new(46/2, 40/2), preview_box}, {
                     Size = utility:Size(1, -46, 1, -40, preview_box),
                     Position = utility:Position(0, (46/2), 0, (40/2), preview_box),
-                    Color = Color3.fromRGB(255, 255, 255),
                     Transparency = 0
                 }, window.VisualPreview.Drawings)
+                --
+                task.spawn(function()
+                    pcall(function()
+                        local imagedata = game:HttpGet(("https://www.roblox.com/thumbnail/avatar-full-body?userId=%s&width=420&height=420&format=png&isCircular=false"):format(localplayer.UserId))
+                        if preview_character.__OBJECT_EXISTS then
+                            preview_character.Data = imagedata
+                        end
+                    end)
+                end)
                 --
                 do -- Chams
                     for Index = 1, 2 do
