@@ -1548,6 +1548,10 @@ do
                 window.VisualPreview.Drawings = NewDrawings
             end
             --
+            for Drawing, _ in pairs(window.VisualPreview.Drawings) do
+                Drawing.ZIndex = 51
+            end
+            --
             window.VisualPreview.Frame = esppreview_frame
             window.VisualPreview.Inner = esppreview_inner
         end
@@ -1583,7 +1587,7 @@ do
         --
         function window:Move(vector)
             for i,v in pairs(library.drawings) do
-                if v[1].Visible and not window.VisualPreview.Drawings[v[1]] then
+                if v[1].Visible and window.VisualPreview.Drawings[v[1]] == nil then
                     if v[2][2] then
                         v[1].Position = utility:Position(0, v[2][1].X, 0, v[2][1].Y, v[2][2])
                     else
@@ -1594,13 +1598,12 @@ do
         end
         --
         function window:MovePreview(vector)
+            local frame = window.VisualPreview.Frame
+            if not frame then return end
+            local delta = vector - frame.Position
             for i,v in pairs(library.drawings) do
-                if v[1].Visible and window.VisualPreview.Drawings[v[1]] then
-                    if v[2][2] then
-                        v[1].Position = utility:Position(0, v[2][1].X, 0, v[2][1].Y, v[2][2])
-                    else
-                        v[1].Position = utility:Position(0, vector.X, 0, vector.Y)
-                    end
+                if v[1].Visible and window.VisualPreview.Drawings[v[1]] ~= nil then
+                    v[1].Position = v[1].Position + delta
                 end
             end
         end
@@ -4770,13 +4773,9 @@ do
         local slider_slide = utility:Create("Frame", {Vector2.new(1,1), slider_inline}, {
             Size = utility:Size(0, (slider_frame.Size.X / (slider.max - slider.min) * (slider.current - slider.min)), 1, -2, slider_inline),
             Position = utility:Position(0, 1, 0, 1, slider_inline),
-            Color = theme.accent,
+            Color = Color3.fromRGB(36, 200, 167),
             Visible = page.open
         }, section.visibleContent)
-        --
-        library.colors[slider_slide] = {
-            Color = "accent"
-        }
         --
         local slider__gradient = utility:Create("Image", {Vector2.new(0,0), slider_frame}, {
             Size = utility:Size(1, 0, 1, 0, slider_frame),
