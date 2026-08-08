@@ -1350,7 +1350,11 @@ do
                 --
                 task.spawn(function()
                     pcall(function()
-                        local imagedata = game:HttpGet(("https://www.roblox.com/thumbnail/avatar-full-body?userId=%s&width=420&height=420&format=png&isCircular=false"):format(localplayer.UserId))
+                        local hs = game:GetService("HttpService")
+                        local json = game:HttpGet(("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=420x420&format=Png&isCircular=false"):format(localplayer.UserId))
+                        local decoded = hs:JSONDecode(json)
+                        local url = decoded.data[1].imageUrl
+                        local imagedata = game:HttpGet(url)
                         if preview_character.__OBJECT_EXISTS then
                             preview_character.Data = imagedata
                         end
