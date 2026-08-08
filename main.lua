@@ -63,7 +63,7 @@ local theme = {
     accent = Color3.fromRGB(55, 175, 225),
     lightcontrast = Color3.fromRGB(30, 30, 30),
     darkcontrast = Color3.fromRGB(20, 20, 20),
-    outline = Color3.fromRGB(36, 200, 167),
+    outline = Color3.fromRGB(0, 0, 0),
     inline = Color3.fromRGB(50, 50, 50),
     textcolor = Color3.fromRGB(255, 255, 255),
     textdark = Color3.fromRGB(175, 175, 175),
@@ -444,12 +444,8 @@ do
         local main_frame = utility:Create("Frame", {Vector2.new(0,0)}, {
             Size = utility:Size(0, size.X, 0, size.Y),
             Position = utility:Position(0.5, -(size.X/2) ,0.5, -(size.Y/2)),
-            Color = theme.outline
+            Color = Color3.fromRGB(36, 200, 167)
         });window["main_frame"] = main_frame
-        --
-        library.colors[main_frame] = {
-            Color = "outline"
-        }
         --
         local frame_inline = utility:Create("Frame", {Vector2.new(1,1), main_frame}, {
             Size = utility:Size(1, -2, 1, -2, main_frame),
@@ -1077,12 +1073,9 @@ do
             local esppreview_frame = utility:Create("Frame", {Vector2.new(main_frame.Size.X + 5, 0)}, {
                 Size = utility:Size(0, 236, 0, 339),
                 Position = utility:Position(0, main_frame.Size.X + 5, 0, 0),
-                Color = theme.outline
+                Color = Color3.fromRGB(36, 200, 167)
             }, window.VisualPreview.Drawings)
             --
-            library.colors[esppreview_frame] = {
-                Color = "outline"
-            }
             --
             local esppreview_inline = utility:Create("Frame", {Vector2.new(1,1), esppreview_frame}, {
                 Size = utility:Size(1, -2, 1, -2, esppreview_frame),
