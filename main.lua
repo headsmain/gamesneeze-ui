@@ -432,7 +432,7 @@ do
     function library:Loader(info)
 		local info = info or {}
         local name = info.name or info.Name or info.title or info.Title or "UI Title"
-        local size = info.size or info.Size or Vector2.new(375,359)
+        local size = info.size or info.Size or Vector2.new(537,616)
         local accent = info.accent or info.Accent or info.color or info.Color or theme.accent
         local callback = info.callback or info.Callback or info.callBack or info.CallBack or function() end
         local pageammount = info.pages or info.Pages or 1
